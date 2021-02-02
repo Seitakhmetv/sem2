@@ -1,0 +1,7 @@
+class Solution:
+    def defangIPaddr(self, ip: str) -> str:
+            ip = list(ip)
+            for x in range(len(ip)):
+                if ip[x] == ".":
+                    ip[x] = "[.]"
+            return "".join(ip)
