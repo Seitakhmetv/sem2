@@ -1,0 +1,63 @@
+import pygame
+import math
+
+pygame.init()
+
+size = w, h = (800, 480)
+screen = pygame.display.set_mode(size)
+
+screen.fill([0, 0, 0])
+
+r = (255, 0, 0)
+g = (0, 255, 0)
+b = (0, 0, 255)
+
+
+font = pygame.font.SysFont("comicsansms", 25)
+tsin = font.render("sin x", True, b)
+tcos = font.render("cos x", True, r)
+
+pygame.display.set_caption("< SINE & COSINE WAVE >")
+
+psin = []
+pcos = []
+
+#1cm -> 200px
+#min -> 40 max-> 440 mid-> 240
+
+for x in range(0, 800):
+    ysin = math.sin(math.radians(x)) * 200 + 240
+    psin.append([x, ysin])
+    ycos = math.cos(math.radians(x)) * 200 + 240
+    pcos.append([x, ycos])
+    if(ycos == 40 or ycos == 440):
+        pygame.draw.line(screen, [255, 255, 0], (x, 0), (x, h), 1)
+    if(ysin == 40 or ysin == 440):  
+        pygame.draw.line(screen, [0, 255, 255], (x, 0), (x, h), 1)
+
+    
+screen.blit(tsin, (20, 20))
+screen.blit(tcos, (20, 40))
+
+rsin = tsin.get_rect()
+rcos = tcos.get_rect()
+
+pygame.draw.line(screen, b, (90, 40), (120, 40), 3)
+pygame.draw.line(screen, r, (90, 60), (120, 60), 3)
+
+pygame.draw.lines(screen, b, False, psin, 3)
+pygame.draw.lines(screen, r, False, pcos, 3)
+
+pygame.draw.line(screen, [255, 255, 255], (0, 240), (800, 240), 3)
+pygame.draw.line(screen, [255, 255, 255], (0, 0), (0, 480), 3)
+
+
+
+pygame.display.flip()
+
+check = True
+
+while check:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            check = False
