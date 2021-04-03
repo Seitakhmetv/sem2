@@ -3,19 +3,48 @@ import math
 
 pygame.init()
 
-size = w, h = (800, 480)
-screen = pygame.display.set_mode(size)
-
-screen.fill([0, 0, 0])
+size = w, h = (1081, 480)
+screen = pygame.Surface(size)
+dis = pygame.display.set_mode((1130, 530))
 
 r = (255, 0, 0)
 g = (0, 255, 0)
 b = (0, 0, 255)
+w = (255, 255, 255)
+bl = (0, 0, 0)
 
+screen.fill(w)
 
-font = pygame.font.SysFont("comicsansms", 25)
-tsin = font.render("sin x", True, b)
-tcos = font.render("cos x", True, r)
+fon = pygame.font.SysFont("comicsansms", 20)
+tsin = fon.render("sin x", True, b)
+tcos = fon.render("cos x", True, r)
+
+font = pygame.font.SysFont("calibri", 15)
+pi0 = font.render("0", True, bl)
+pi1 = font.render("\u03C0", True, bl)
+pi2 = font.render("2\u03C0", True, bl)
+pi3 = font.render("3\u03C0", True, bl)
+ip1 = font.render("-\u03C0", True, bl)
+ip2 = font.render("-2\u03C0", True, bl)
+ip3 = font.render("-3\u03C0", True, bl)
+
+a1 = font.render("-5\u03C0/2", True, bl)
+a2 = font.render("-3\u03C0/2", True, bl)
+a3 = font.render("-\u03C0/2", True, bl)
+a4 = font.render("\u03C0/2", True, bl)
+a5 = font.render("3\u03C0/2", True, bl)
+a6 = font.render("5\u03C0/2", True, bl)
+
+fonty = pygame.font.SysFont("Arial", 10)
+xt0 = fonty.render("0", True, bl)
+xt1 = fonty.render("1", True, bl)
+xt7 = fonty.render("0.75", True, bl)
+xt5 = fonty.render("0.50", True, bl)
+xt2 = fonty.render("0.25", True, bl)
+tx1 = fonty.render("-1", True, bl)
+tx2 = fonty.render("-0.25", True, bl)
+tx7 = fonty.render("-0.75", True, bl)
+tx5 = fonty.render("-0.50", True, bl)
 
 pygame.display.set_caption("< SINE & COSINE WAVE >")
 
@@ -25,33 +54,113 @@ pcos = []
 #1cm -> 200px
 #min -> 40 max-> 440 mid-> 240
 
-for x in range(0, 800):
+for x in range(0, 1081):
+    
     ysin = math.sin(math.radians(x)) * 200 + 240
     psin.append([x, ysin])
     ycos = math.cos(math.radians(x)) * 200 + 240
     pcos.append([x, ycos])
+
     if(ycos == 40 or ycos == 440):
-        pygame.draw.line(screen, [255, 255, 0], (x, 0), (x, h), 1)
-    if(ysin == 40 or ysin == 440):  
-        pygame.draw.line(screen, [0, 255, 255], (x, 0), (x, h), 1)
+        pygame.draw.line(screen, bl, (x, 0), (x, h), 1) 
 
-    
-screen.blit(tsin, (20, 20))
-screen.blit(tcos, (20, 40))
-
-rsin = tsin.get_rect()
-rcos = tcos.get_rect()
-
-pygame.draw.line(screen, b, (90, 40), (120, 40), 3)
-pygame.draw.line(screen, r, (90, 60), (120, 60), 3)
-
+#sin cos
 pygame.draw.lines(screen, b, False, psin, 3)
 pygame.draw.lines(screen, r, False, pcos, 3)
 
-pygame.draw.line(screen, [255, 255, 255], (0, 240), (800, 240), 3)
-pygame.draw.line(screen, [255, 255, 255], (0, 0), (0, 480), 3)
 
+#x & y coordinates
+pygame.draw.line(screen, bl, (0, 240), (1080, 240), 3)
+pygame.draw.line(screen, bl, (540, 0), (540, 480), 3)
 
+#x lines
+pygame.draw.line(screen, bl, (0, 40), (1080, 40), 1)
+pygame.draw.line(screen, bl, (0, 90), (1080, 90), 1)
+pygame.draw.line(screen, bl, (0, 190), (1080, 190), 1)
+pygame.draw.line(screen, bl, (0, 140), (1080, 140), 1)
+pygame.draw.line(screen, bl, (0, 440), (1080, 440), 1)
+pygame.draw.line(screen, bl, (0, 390), (1080, 390), 1)
+pygame.draw.line(screen, bl, (0, 340), (1080, 340), 1)
+pygame.draw.line(screen, bl, (0, 290), (1080, 290), 1)
+
+#text
+trect = pygame.Surface((100, 50))
+trect.fill(w)
+trect.set_alpha(255)    
+trect.blit(tsin, (0, 0))
+trect.blit(tcos, (0, 20))
+
+#text lines
+pygame.draw.line(trect, b, (60, 15), (90, 15), 2)
+pygame.draw.line(trect, r, (60, 35), (90, 35), 2)
+screen.blit(trect, (740, 12))
+
+#sin mini lines
+
+for i in range(90, 1081, 180):
+    pygame.draw.line(screen, bl, (i, 480), (i, 465))
+
+for i in range(45, 1081, 180):
+    pygame.draw.line(screen, bl, (i, 480), (i, 470))
+
+for i in range(135, 1081, 90):
+    pygame.draw.line(screen, bl, (i, 480), (i, 470))
+
+for i in range(67, 1081, 45):
+    pygame.draw.line(screen, bl, (i, 480), (i, 475))
+
+#mini for upper
+
+for i in range(90, 1081, 180):
+    pygame.draw.line(screen, bl, (i, 0), (i, 15))
+
+for i in range(45, 1081, 180):
+    pygame.draw.line(screen, bl, (i, 0), (i, 10))
+
+for i in range(135, 1081, 90):
+    pygame.draw.line(screen, bl, (i, 0), (i, 10))
+
+for i in range(67, 1081, 45):
+    pygame.draw.line(screen, bl, (i, 0), (i, 5))
+
+#mini for left
+
+for i in range(40, 480, 25):
+    pygame.draw.line(screen, bl, (0, i), (15, i))
+
+#screen to display
+dis.fill((230, 230, 230))
+dis.blit(screen, (25, 25))
+pygame.display.flip()
+
+#text of x coordinates 562 mid of display
+dis.blit(pi0, (562, 510))
+dis.blit(pi1, (562 + 180, 510))
+dis.blit(pi2, (562 + 360, 510))
+dis.blit(pi3, (560 + 540, 510))
+dis.blit(ip1, (562 - 180, 510))
+dis.blit(ip2, (562 - 360, 510))
+dis.blit(ip3, (562 - 540, 510))
+
+#text of y coordinates 255 mid of display
+dis.blit(pi0, (10, 255))
+dis.blit(tx2, (0, 255-50))
+dis.blit(tx5, (0, 255-100))
+dis.blit(tx7, (0, 255-150))
+dis.blit(tx1, (10, 255-200))
+dis.blit(xt1, (10, 255+200))
+dis.blit(xt2, (0, 255+50))
+dis.blit(xt5, (0, 255+100))
+dis.blit(xt7, (0, 255+150))
+
+#text of x coordinates for sin
+
+dis.blit(a1, (562-450, 510))
+dis.blit(a2, (562-270, 510))
+dis.blit(a3, (562-90, 510))
+dis.blit(a4, (562+90, 510))
+dis.blit(a5, (562+270, 510))
+dis.blit(a6, (562+450, 510))
 
 pygame.display.flip()
 
