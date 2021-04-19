@@ -1,0 +1,243 @@
+import pygame
+import random
+import time
+
+pygame.init()
+screen = pygame.display.set_mode((800, 600))
+
+class Food:
+    def __init__(self):
+        self.x = random.randint(0, 800)
+        self.y = random.randint(0, 600)
+
+    def gen(self):
+        self.x = random.randint(0, 800)
+        self.y = random.randint(0, 600)
+
+    def draw(self):
+        pygame.draw.rect(screen, (0, 255, 0), (self.x, self.y, 10, 10))
+
+class Wall:
+    def __init__(self, x1, y1, x2, y2):
+        self.x1 = x1
+        self.y1 = y1
+        self.x2 = x2
+        self.y2 = y2
+    def draw(self):
+        pygame.draw.line(screen, (255, 0, 255), (self.x1, self.y1), (self.x2, self.y2), 10)
+        pygame.display.flip()
+        #print("LOL")
+
+class Snake:
+    def __init__(self, x, y):
+        self.size = 1
+        self.elements = [[x, y]]
+        self.radius = 10
+        self.dx = 5 # right
+        self.dy = 0
+        self.is_add = False
+        self.speed = 10
+
+
+    # [x1, y1], [x2, y2], [x3, y3], [x3, y3], [x4, y4] i -> i - 1
+
+    def draw(self):
+        for element in self.elements:
+            pygame.draw.circle(screen, (255, 0, 0), element, self.radius)
+
+    def add_to_snake(self):
+        self.size += 1
+        self.elements.append([0, 0])
+        self.is_add = False
+        if self.size % 3 == 0:
+            self.speed += 10
+
+    def move(self):
+        if self.is_add:
+            self.add_to_snake()
+
+        for i in range(self.size - 1, 0, -1):
+            self.elements[i][0] = self.elements[i - 1][0]
+            self.elements[i][1] = self.elements[i - 1][1]
+
+        self.elements[0][0] += self.dx
+        self.elements[0][1] += self.dy
+        
+    def eat(self, foodx, foody):
+        x = self.elements[0][0]
+        y = self.elements[0][1]
+        
+        if foodx <= x <= foodx + 10 and foody <= y <= foody + 10:
+            return True
+        return False
+    def ch(self, wallx1, wally1, wallx2, wally2):
+        x = self.elements[0][0]
+        y = self.elements[0][1]
+
+        if wallx1 <= x <= wallx2 + 10 and wally1 <= y <= wally2 + 10:
+            return True
+        return False
+        
+def gg():
+    my_font = pygame.font.SysFont(None, 90)
+    surf = my_font.render('YOU DIED', True, (255, 0, 0))
+    ggrect = surf.get_rect()
+    ggrect.midtop = (400, 250)
+    screen.fill((0, 0, 0))
+    screen.blit(surf, ggrect)
+    pygame.display.flip()
+
+
+#def level 1
+
+snake1 = Snake(100, 100)
+snake2 = Snake(150, 100)
+food = Food()
+walls = []
+walls.append(Wall(0, 0, 800, 0))
+walls.append(Wall(0, 0, 0, 600))
+walls.append(Wall(800, 600, 800, 100))
+walls.append(Wall(800, 600, 0, 600))
+
+
+running = True
+
+d = 5
+FPS = 30
+
+clock = pygame.time.Clock()
+
+#save
+fpath = "C:\\Users\\User\\main\\TSIS11\\save.txt"
+f = open(fpath, "r")
+sv = []
+for line in f:
+    sv.append(line)
+
+nxt = False
+
+frnd = (800, 600, 800, 100)
+
+while running:
+    for wall in walls:
+        wall.draw()
+    
+    #check gg
+    for wall in walls:
+        if snake1.ch(wall.x1, wall.y1, wall.x2, wall.y2):
+            gg()
+            print(1)
+            running = False
+
+        if snake2.ch(wall.x1, wall.y1, wall.x2, wall.y2):
+            gg()
+            print(2)
+            print(wall.x2)
+            running = False
+
+
+    clock.tick(snake1.speed)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                running = False
+            if event.key == pygame.K_RIGHT and snake1.dx != -d:
+                snake1.dx = d
+                snake1.dy = 0
+            if event.key == pygame.K_LEFT and snake1.dx != d:
+                snake1.dx = -d
+                snake1.dy = 0
+            if event.key == pygame.K_UP and snake1.dy != d:
+                snake1.dx = 0
+                snake1.dy = -d
+            if event.key == pygame.K_DOWN and snake1.dy != -d:
+                snake1.dx = 0
+                snake1.dy = d
+
+            if event.key == pygame.K_d and snake2.dx != -d:
+                snake2.dx = d
+                snake2.dy = 0
+            if event.key == pygame.K_a and snake2.dx != d:
+                snake2.dx = -d
+                snake2.dy = 0
+            if event.key == pygame.K_w and snake2.dy != d:
+                snake2.dx = 0
+                snake2.dy = -d
+            if event.key == pygame.K_s and snake2.dy != -d:
+                snake2.dx = 0
+                snake2.dy = d
+
+            if event.key == pygame.K_1:
+                snake1.is_add = True
+            if snake1.dx < 0:
+                snake1.dx == 800
+
+    if snake1.elements[0][0] > 800:
+        snake1.elements[0][0] = 1
+    if snake1.elements[0][0] <= 0:
+        snake1.elements[0][0] = 800
+    if snake1.elements[0][1] > 600:
+        snake1.elements[0][1] = 1
+    if snake1.elements[0][1] <= 0:
+        snake1.elements[0][1] = 600
+
+    if snake2.elements[0][0] > 800:
+        snake2.elements[0][0] = 1
+    if snake2.elements[0][0] <= 0:
+        snake2.elements[0][0] = 800
+    if snake2.elements[0][1] > 600:
+        snake2.elements[0][1] = 1
+    if snake2.elements[0][1] <= 0:
+        snake2.elements[0][1] = 600
+
+    if snake1.eat(food.x, food.y):
+        snake1.is_add = True
+        food.gen()
+
+    if snake2.eat(food.x, food.y):
+        snake2.is_add = True
+        food.gen()
+    
+    snake1.move()
+    snake2.move()
+    if(snake1.ch(frnd[0], frnd[1], frnd[2], frnd[3])):
+        nxt = True
+    
+    if(snake2.ch(frnd[0], frnd[1], frnd[2], frnd[3])):
+        nxt = True
+    
+    if (nxt):
+        if(sv[0] == "1"):
+            walls.clear()
+            snake1 = Snake(100, 100)
+            snake2 = Snake(150, 100)
+            food = Food()
+            walls = []
+            walls.append(Wall(0, 0, 800, 0))
+            walls.append(Wall(0, 0, 0, 600))
+            #exit nxt rnd
+            walls.append(Wall(800, 600, 800, 100))
+            walls.append(Wall(800, 600, 0, 600))
+        if(sv[0] == "2"):
+            walls.clear()
+            snake1 = Snake(100, 100)
+            snake2 = Snake(150, 100)
+            snake1.speed = 40
+            snake2.speed = 40
+            food = Food()
+            walls = []
+            walls.append(Wall(0, 0, 800, 0))
+            walls.append(Wall(0, 0, 0, 600))
+            #exit nxt rnd
+            walls.append(Wall(800, 600, 700, 0))
+            walls.append(Wall(800, 600, 0, 600))
+
+    screen.fill((0, 0, 0))
+    snake1.draw()
+    snake2.draw()
+    food.draw()
+    pygame.display.flip()
+time.sleep(2)
+pygame.quit()
