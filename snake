@@ -111,28 +111,56 @@ clock = pygame.time.Clock()
 fpath = "C:\\Users\\User\\main\\TSIS11\\save.txt"
 f = open(fpath, "r")
 sv = []
+n = 0
 for line in f:
     sv.append(line)
+    n += 1
+f.close()
+
+fw = open(fpath, "a")
 
 nxt = False
 
-frnd = (800, 600, 800, 100)
+pg = 1
+
+frnd = (800, 0, 800, 100)
+
+q = (int(sv[0]) % 10)
+
+last = False
+
+if(q == 2):
+    pg = 2
+    nxt = True
+    fw.write(str(pg))
 
 while running:
     for wall in walls:
         wall.draw()
-    
+    val = (int(sv[0]) % 10)
+
+
+    #nxt rnd
+    if(snake1.ch(frnd[0], frnd[1], frnd[2], frnd[3])):
+        nxt = True
+        if last:
+            print("YOU WON!")
+        fw.write(str(pg))
+    if(snake2.ch(frnd[0], frnd[1], frnd[2], frnd[3])):
+        nxt = True
+        if last:
+            print("YOU WON!")
+        pg += 1
+        fw.write(str(pg))
+        
     #check gg
     for wall in walls:
         if snake1.ch(wall.x1, wall.y1, wall.x2, wall.y2):
             gg()
-            print(1)
             running = False
 
         if snake2.ch(wall.x1, wall.y1, wall.x2, wall.y2):
             gg()
-            print(2)
-            print(wall.x2)
             running = False
 
 
@@ -202,14 +230,9 @@ while running:
     
     snake1.move()
     snake2.move()
-    if(snake1.ch(frnd[0], frnd[1], frnd[2], frnd[3])):
-        nxt = True
-    
-    if(snake2.ch(frnd[0], frnd[1], frnd[2], frnd[3])):
-        nxt = True
     
     if (nxt):
-        if(sv[0] == "1"):
+        if(pg == 1):
             walls.clear()
             snake1 = Snake(100, 100)
             snake2 = Snake(150, 100)
@@ -220,24 +243,31 @@ while running:
             #exit nxt rnd
             walls.append(Wall(800, 600, 800, 100))
             walls.append(Wall(800, 600, 0, 600))
-        if(sv[0] == "2"):
+        if(pg == 2):
             walls.clear()
-            snake1 = Snake(100, 100)
-            snake2 = Snake(150, 100)
+            snake1 = Snake(400, 300)
+            snake2 = Snake(400, 350)
             snake1.speed = 40
             snake2.speed = 40
             food = Food()
             walls = []
             walls.append(Wall(0, 0, 800, 0))
-            walls.append(Wall(0, 0, 0, 600))
-            #exit nxt rnd
-            walls.append(Wall(800, 600, 700, 0))
-            walls.append(Wall(800, 600, 0, 600))
+            walls.append(Wall(0, 0, 0, 100))
+            walls.append(Wall(0, 200, 0, 600))
+            walls.append(Wall(0, 600, 300, 600))
+            walls.append(Wall(400, 600, 800, 600))
+            walls.append(Wall(800, 600, 800, 200))
+            walls.append(Wall(800, 100, 800, 0))
+            frnd = (300, 600, 400, 600)
+            last = True
+            
+        nxt = False
 
     screen.fill((0, 0, 0))
     snake1.draw()
     snake2.draw()
     food.draw()
     pygame.display.flip()
+fw.close()
 time.sleep(2)
 pygame.quit()
